@@ -11,6 +11,8 @@ const cors = require('cors')
 
 app.use(cors())
 
+app.use(express.static('build'))
+
 let persons = require("./db.json");
 
 const generateId = () => {
