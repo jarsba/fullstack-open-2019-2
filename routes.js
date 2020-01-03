@@ -1,63 +1,63 @@
-let express = require('express');
-let router = express.Router();
+/* eslint-disable consistent-return */
+const express = require('express');
 
-let persons = require("./db.json");
+const router = express.Router();
 
-const generateId = () => {
-    return Math.floor(Math.random() * 1000000)
-}
+let persons = require('./db.json');
+
+const generateId = () => Math.floor(Math.random() * 1000000);
 
 router.get('/', (request, response) => {
-    response.send('Hello World!')
-})
+    response.send('Hello World!');
+});
 
 router.get('/persons', (request, response) => {
-    response.json(persons)
-})
+    response.json(persons);
+});
 
 router.post('/persons', (request, response) => {
-    const body = request.body
+    const { body } = request;
 
     if (!body.name || !body.number) {
         return response.status(400).json({
-            error: 'name or number missing'
-        })
+            error: 'name or number missing',
+        });
     }
 
-    if(persons.filter(person => person.name === body.name).length > 0 ) {
+    if (persons.filter((person) => person.name === body.name).length > 0) {
         return response.status(400).json({
-            error: 'name must be unique'
-        })
+            error: 'name must be unique',
+        });
     }
 
     const person = {
         name: body.name,
         number: body.number,
-        id: generateId()
-    }
+        id: generateId(),
+    };
 
-    persons = persons.concat(person)
+    persons = persons.concat(person);
 
-    response.json(persons)
-})
+    response.json(persons);
+});
 
 router.get('/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
+    const id = Number(request.params.id);
+    const person = persons.find((person) => person.id === id);
 
     if (!person) {
         return response.status(404).json({
-            error: 'person not found'
-        })
+            error: 'person not found',
+        });
     }
 
-    response.json(person)
-})
+    response.json(person);
+});
 
 router.delete('/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
-})
+    const id = Number(request.params.id);
+    persons = persons.filter((person) => person.id !== id);
+    response.status(204).end();
+});
 
 module.exports = router;
